@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DBL TEAM{% endblock %}</title>
+    <link rel="icon" type="image/jpg" href="/static/images/logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-particles">
+        {% for i in range(15) %}
+        <div class="particle"></div>
+        {% endfor %}
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="/static/images/logo.jpg" alt="DBL TEAM" class="logo-img">
+                <span class="logo-text">DBL <span class="highlight">TEAM</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+                {% if session.get('user_id') %}
+                    <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> لوحتي</a>
+                    {% if session.get('is_admin') %}
+                        <a href="/admin" class="nav-link admin-link"><i class="fas fa-shield-alt"></i> الإدارة</a>
+                    {% endif %}
+                    <a href="/logout" class="nav-link btn-logout"><i class="fas fa-sign-out-alt"></i> خروج</a>
+                {% else %}
+                    <a href="/login" class="nav-link"><i class="fas fa-sign-in-alt"></i> دخول</a>
+                    <a href="https://t.me/DBL_0" target="_blank" class="nav-link btn-register">
+                        <i class="fab fa-telegram"></i> اشترك
+                    </a>
+                {% endif %}
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+            {% if session.get('user_id') %}
+                <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> لوحتي</a>
+                {% if session.get('is_admin') %}
+                    <a href="/admin" class="nav-link admin-link"><i class="fas fa-shield-alt"></i> الإدارة</a>
+                {% endif %}
+                <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> خروج</a>
+            {% else %}
+                <a href="/login" class="nav-link"><i class="fas fa-sign-in-alt"></i> دخول</a>
+                <a href="https://t.me/DBL_0" target="_blank" class="nav-link"><i class="fab fa-telegram"></i> اشترك</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">
+                        <i class="fas fa-{% if category == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                        <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="/static/images/logo.jpg" alt="DBL TEAM" class="footer-logo">
+                <div>
+                    <h3>DBL TEAM</h3>
+                    <p>خدمة Free Fire الاحترافية</p>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>روابط سريعة</h4>
+                <a href="/"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="/login"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a>
+                <a href="https://t.me/DBL_0" target="_blank"><i class="fab fa-telegram"></i> الاشتراك</a>
+            </div>
+            <div class="footer-contact">
+                <h4>تواصل مع الأدمن</h4>
+                <a href="https://t.me/DBL_0" target="_blank">
+                    <i class="fab fa-telegram"></i> @DBL_0
+                </a>
+                <p><i class="fas fa-shield-alt"></i> خدمة مضمونة 100%</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 DBL TEAM. جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

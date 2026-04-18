@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}الخدمات - DBL TEAM{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1><i class="fas fa-store"></i> خدماتنا</h1>
+    <p>اختر الخدمة المناسبة لك من مجموعتنا الاحترافية</p>
+</div>
+
+<div class="section">
+    <!-- Category Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="all" onclick="filterServices('all')">
+            <i class="fas fa-th"></i> الكل
+        </button>
+        <button class="tab-btn" data-tab="token" onclick="filterServices('token')">
+            <i class="fas fa-key"></i> توكنات وحسابات
+        </button>
+        <button class="tab-btn" data-tab="channel" onclick="filterServices('channel')">
+            <i class="fas fa-hashtag"></i> خنات
+        </button>
+        <button class="tab-btn" data-tab="dev" onclick="filterServices('dev')">
+            <i class="fas fa-code"></i> باقات مطور
+        </button>
+    </div>
+
+    <div class="services-grid" id="servicesGrid">
+        {% for s in services %}
+        <div class="service-card" data-category="{{ s.category }}">
+            <div class="service-icon"><i class="{{ s.icon }}"></i></div>
+            <div class="service-name">{{ s.name }}</div>
+            <div class="service-desc">{{ s.description }}</div>
+            <div class="service-price">${{ "%.1f"|format(s.price) }} <span>USD</span></div>
+            <div style="display:flex;gap:0.7rem;">
+                {% if user %}
+                <a href="/buy/{{ s.id }}" class="btn btn-primary" style="flex:1;justify-content:center;">
+                    <i class="fas fa-shopping-cart"></i> اشتري
+                </a>
+                {% else %}
+                <a href="/login" class="btn btn-secondary" style="flex:1;justify-content:center;">
+                    <i class="fas fa-sign-in-alt"></i> سجل دخول
+                </a>
+                {% endif %}
+                <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram">
+                    <i class="fab fa-telegram"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not services %}
+    <div class="empty-state">
+        <i class="fas fa-store"></i>
+        <p>لا توجد خدمات متاحة حالياً</p>
+    </div>
+    {% endif %}
+
+    <!-- Contact -->
+    <div class="cta-section glow-border" style="margin-top:3rem;">
+        <i class="fab fa-telegram" style="font-size:3.5rem;color:#29b6f6;margin-bottom:1rem;display:block;"></i>
+        <h2>هل تريد خدمة مخصصة؟</h2>
+        <p>تواصل مع المطور مباشرة للحصول على عروض خاصة أو خدمات مخصصة</p>
+        <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram btn-lg">
+            <i class="fab fa-telegram"></i> @DBL_0 - تواصل الآن
+        </a>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function filterServices(cat) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.service-card').forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

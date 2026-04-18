@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}شراء - {{ service.name }}{% endblock %}
+{% block content %}
+<div class="buy-page">
+    <div class="buy-card">
+        <div class="buy-header">
+            <div style="font-size:3rem;margin-bottom:1rem;color:var(--primary);">
+                <i class="{{ service.icon }}"></i>
+            </div>
+            <h2 style="font-size:1.5rem;font-weight:900;">{{ service.name }}</h2>
+            <p style="color:var(--text2);margin-top:0.5rem;">{{ service.description }}</p>
+        </div>
+        <div class="buy-body">
+            <div class="price-display">
+                <div style="color:var(--text2);font-size:0.9rem;margin-bottom:0.5rem;">السعر الإجمالي</div>
+                <div class="big-price">${{ "%.1f"|format(service.price) }}</div>
+                <div style="color:var(--text2);font-size:0.85rem;margin-top:0.3rem;">USD - دولار أمريكي</div>
+            </div>
+
+            <div style="background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:1.5rem;">
+                <h4 style="color:var(--primary);margin-bottom:0.8rem;"><i class="fas fa-info-circle"></i> معلومات الطلب</h4>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;color:var(--text2);font-size:0.9rem;">
+                    <div><i class="fas fa-user"></i> المشتري: <strong style="color:var(--text);">{{ user.username }}</strong></div>
+                    <div><i class="fas fa-tag"></i> الخدمة: <strong style="color:var(--text);">{{ service.name }}</strong></div>
+                    <div><i class="fas fa-dollar-sign"></i> المبلغ: <strong style="color:var(--gold);">${{ "%.1f"|format(service.price) }}</strong></div>
+                </div>
+            </div>
+
+            <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:1.2rem;margin-bottom:1.5rem;">
+                <h4 style="color:var(--accent);margin-bottom:0.5rem;"><i class="fas fa-exclamation-circle"></i> طريقة الدفع</h4>
+                <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;">
+                    بعد تأكيد الطلب، سيتم التواصل معك عبر تيليقرام لإتمام عملية الدفع وتسليم الخدمة.
+                    يرجى التأكد من أن معرف تيليقرام الخاص بك محدث في الملف الشخصي.
+                </p>
+            </div>
+
+            <form method="POST" action="/buy/confirm/{{ service.id }}">
+                <button type="submit" class="btn btn-primary btn-full btn-lg">
+                    <i class="fas fa-check-circle"></i> تأكيد الطلب
+                </button>
+            </form>
+
+            <a href="/services" class="btn btn-secondary btn-full" style="margin-top:0.8rem;">
+                <i class="fas fa-arrow-right"></i> العودة للخدمات
+            </a>
+
+            <div style="text-align:center;margin-top:1.5rem;">
+                <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram">
+                    <i class="fab fa-telegram"></i> تواصل مباشرة مع @DBL_0
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

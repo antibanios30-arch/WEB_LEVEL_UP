@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% block title %}لوحة التحكم - DBL TEAM{% endblock %}
+{% block content %}
+<div class="dashboard-page">
+
+    <!-- User Header -->
+    <div class="dashboard-header">
+        <div class="user-avatar">{{ user.username[0].upper() }}</div>
+        <div style="flex:1;">
+            <h2 style="font-size:1.5rem;font-weight:900;">مرحباً، {{ user.username }} 👋</h2>
+            <p style="color:var(--text2);font-size:0.9rem;margin-top:0.3rem;">
+                <i class="fas fa-calendar-alt"></i> انضممت في {{ user.created_at[:10] }}
+                {% if user.last_login %}
+                &nbsp;|&nbsp;<i class="fas fa-clock"></i> آخر دخول: {{ user.last_login[:16] }}
+                {% endif %}
+            </p>
+            <!-- Subscription Status Bar -->
+            <div style="margin-top:0.7rem;">
+                {% if sub_active %}
+                <span style="background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.4);color:var(--success);padding:0.3rem 1rem;border-radius:50px;font-size:0.85rem;font-weight:700;">
+                    <i class="fas fa-check-circle"></i>
+                    {% if user.plan == 'lifetime' %}
+                    اشتراك مدى الحياة ♾️
+                    {% else %}
+                    اشتراك نشط ✅ | ينتهي: {{ user.subscription_expires[:10] if user.subscription_expires else '' }}
+                    {% endif %}
+                </span>
+                {% else %}
+                <span style="background:rgba(255,82,82,0.15);border:1px solid rgba(255,82,82,0.4);color:var(--error);padding:0.3rem 1rem;border-radius:50px;font-size:0.85rem;font-weight:700;">
+                    <i class="fas fa-times-circle"></i> الاشتراك منتهي أو غير مفعل
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% if user.is_admin %}
+        <a href="/admin" class="btn btn-primary">
+            <i class="fas fa-shield-alt"></i> لوحة الإدارة
+        </a>
+        {% endif %}
+    </div>
+
+    {% if not sub_active and not user.is_admin %}
+    <!-- Expired Notice -->
+    <div style="background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.3);border-radius:16px;padding:1.5rem;margin-bottom:2rem;text-align:center;">
+        <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:var(--error);margin-bottom:0.8rem;display:block;"></i>
+        <h3 style="color:var(--error);margin-bottom:0.5rem;">اشتراكك منتهي أو غير مفعل</h3>
+        <p style="color:var(--text2);margin-bottom:1rem;">للتجديد أو التفعيل تواصل مع الأدمن مباشرة</p>
+        <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram">
+            <i class="fab fa-telegram"></i> تواصل مع @DBL_0
+        </a>
+    </div>
+    {% endif %}
+
+    {% if sub_active or user.is_admin %}
+
+    <!-- ══════════════════════════════════════
+         لوحة تحكم Free Fire
+    ══════════════════════════════════════ -->
+    <div id="ff-panel" style="margin-bottom:2rem;">
+        <h3 style="font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:1rem;">
+            <i class="fas fa-gamepad"></i> لوحة تحكم Free Fire
+        </h3>
+
+        <!-- حالة البوت -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.5rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <div id="bot-dot" style="width:14px;height:14px;border-radius:50%;background:#555;box-shadow:0 0 8px #555;transition:all 0.4s;flex-shrink:0;"></div>
+                <div>
+                    <div id="bot-status-text" style="font-weight:700;font-size:1rem;">جاري التحقق...</div>
+                    <div id="bot-uid-text" style="color:var(--text2);font-size:0.8rem;margin-top:0.2rem;"></div>
+                </div>
+            </div>
+            <div id="auto-badge" style="display:none;background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.4);color:var(--success);padding:0.4rem 1.1rem;border-radius:50px;font-size:0.85rem;font-weight:700;">
+                <i class="fas fa-spinner fa-spin"></i> <span id="auto-badge-text">يعمل</span>
+            </div>
+        </div>
+
+        <!-- الأوامر -->
+        <div class="ff-cmd-grid">
+
+            <!-- /lw -->
+            <div style="background:var(--card);border:2px solid rgba(0,230,118,0.3);border-radius:20px;padding:1.5rem;">
+                <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1rem;">
+                    <div style="width:40px;height:40px;background:rgba(0,230,118,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-play" style="color:var(--success);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:800;font-size:1rem;color:var(--success);">/lw</div>
+                        <div style="color:var(--text2);font-size:0.78rem;">ابدأ Auto Level Up</div>
+                    </div>
+                </div>
+                <div style="margin-bottom:0.8rem;">
+                    <label style="color:var(--text2);font-size:0.82rem;display:block;margin-bottom:0.4rem;"><i class="fas fa-hashtag"></i> كود الفريق (Team Code)</label>
+                    <input id="teamCodeInput" type="text" inputmode="numeric" pattern="[0-9]*"
+                        placeholder="مثال: 123456"
+                        style="width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-family:Cairo,sans-serif;font-size:1rem;outline:none;box-sizing:border-box;"
+                        onkeydown="if(event.key==='Enter') startBot()">
+                </div>
+                <button id="startBtn" onclick="startBot()"
+                    style="width:100%;background:linear-gradient(135deg,#00e676,#00b248);border:none;border-radius:12px;padding:0.8rem;color:#000;font-weight:900;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                    <i class="fas fa-play"></i> ابدأ Auto
+                </button>
+            </div>
+
+            <!-- /stop_auto -->
+            <div style="background:var(--card);border:2px solid rgba(255,82,82,0.3);border-radius:20px;padding:1.5rem;">
+                <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1rem;">
+                    <div style="width:40px;height:40px;background:rgba(255,82,82,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-stop" style="color:var(--error);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:800;font-size:1rem;color:var(--error);">/stop_auto</div>
+                        <div style="color:var(--text2);font-size:0.78rem;">أوقف Auto Level Up</div>
+                    </div>
+                </div>
+                <div id="running-info" style="background:var(--dark3);border-radius:10px;padding:0.8rem;margin-bottom:0.8rem;min-height:3rem;display:flex;align-items:center;justify-content:center;">
+                    <span style="color:var(--text2);font-size:0.85rem;" id="running-info-text">لا يوجد شيء يعمل حالياً</span>
+                </div>
+                <button id="stopBtn" onclick="stopBot()"
+                    style="width:100%;background:linear-gradient(135deg,#ff5252,#c62828);border:none;border-radius:12px;padding:0.8rem;color:#fff;font-weight:900;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                    <i class="fas fa-stop"></i> أوقف Auto
+                </button>
+            </div>
+        </div>
+
+        <!-- رسالة النتيجة -->
+        <div id="ff-result" style="display:none;margin-top:1rem;border-radius:14px;padding:1rem 1.5rem;font-weight:700;text-align:center;font-size:0.95rem;"></div>
+
+        <!-- معلومات الأوامر -->
+        <div style="background:var(--dark3);border-radius:14px;padding:1rem 1.5rem;margin-top:1rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+            <span style="color:var(--text2);font-size:0.82rem;"><i class="fas fa-info-circle" style="color:var(--accent);"></i> يمكنك التحكم بالبوت من هنا أو من داخل اللعبة مباشرةً</span>
+            <code style="background:rgba(0,230,118,0.1);color:var(--success);padding:0.2rem 0.7rem;border-radius:8px;font-size:0.8rem;">/lw &lt;team_code&gt;</code>
+            <code style="background:rgba(255,82,82,0.1);color:var(--error);padding:0.2rem 0.7rem;border-radius:8px;font-size:0.8rem;">/stop_auto</code>
+            <code style="background:rgba(108,99,255,0.1);color:var(--primary);padding:0.2rem 0.7rem;border-radius:8px;font-size:0.8rem;">/help</code>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Activity Log -->
+    {% if logs %}
+    <div class="table-card">
+        <div class="table-header">
+            <h3><i class="fas fa-history"></i> سجل النشاط</h3>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>الإجراء</th><th>التفاصيل</th><th>التاريخ</th></tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td><span class="badge badge-primary">{{ log.action }}</span></td>
+                        <td>{{ log.details }}</td>
+                        <td>{{ log.created_at[:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Contact -->
+    <div style="background:linear-gradient(135deg,rgba(108,99,255,0.1),rgba(0,212,255,0.08));border:1px solid rgba(108,99,255,0.3);border-radius:20px;padding:2rem;text-align:center;margin-top:1rem;">
+        <i class="fab fa-telegram" style="font-size:3rem;color:#29b6f6;margin-bottom:0.8rem;display:block;"></i>
+        <h3 style="margin-bottom:0.5rem;">هل تحتاج مساعدة؟</h3>
+        <p style="color:var(--text2);margin-bottom:1.2rem;">تواصل مع الأدمن مباشرة للدعم الفني أو تجديد الاشتراك</p>
+        <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram btn-lg">
+            <i class="fab fa-telegram"></i> @DBL_0
+        </a>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+// ── FF Bot Control ──────────────────────────────────────────────────────────
+function showResult(msg, ok) {
+    const el = document.getElementById('ff-result');
+    if (!el) return;
+    el.style.display = 'block';
+    el.style.background = ok ? 'rgba(0,230,118,0.12)' : 'rgba(255,82,82,0.12)';
+    el.style.border   = ok ? '1px solid rgba(0,230,118,0.4)' : '1px solid rgba(255,82,82,0.4)';
+    el.style.color    = ok ? 'var(--success)' : 'var(--error)';
+    el.innerHTML = (ok ? '<i class="fas fa-check-circle"></i> ' : '<i class="fas fa-times-circle"></i> ') + msg;
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function setBtnLoading(id, loading) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.style.opacity = loading ? '0.6' : '1';
+}
+
+async function startBot() {
+    const code = (document.getElementById('teamCodeInput') || {}).value || '';
+    if (!code.trim()) { showResult('أدخل كود الفريق أولاً', false); return; }
+    setBtnLoading('startBtn', true);
+    try {
+        const r = await fetch('/api/ff/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ team_code: code.trim() })
+        });
+        const d = await r.json();
+        showResult(d.message || d.error, d.success);
+        if (d.success) { document.getElementById('teamCodeInput').value = ''; updateStatus(); }
+    } catch(e) { showResult('خطأ في الاتصال', false); }
+    setBtnLoading('startBtn', false);
+}
+
+async function stopBot() {
+    setBtnLoading('stopBtn', true);
+    try {
+        const r = await fetch('/api/ff/stop', { method: 'POST' });
+        const d = await r.json();
+        showResult(d.message || d.error, d.success);
+        if (d.success) updateStatus();
+    } catch(e) { showResult('خطأ في الاتصال', false); }
+    setBtnLoading('stopBtn', false);
+}
+
+async function updateStatus() {
+    try {
+        const r = await fetch('/api/ff/status');
+        const d = await r.json();
+        if (!d.success) return;
+
+        const dot     = document.getElementById('bot-dot');
+        const stTxt   = document.getElementById('bot-status-text');
+        const uidTxt  = document.getElementById('bot-uid-text');
+        const badge   = document.getElementById('auto-badge');
+        const badgeTx = document.getElementById('auto-badge-text');
+        const infoTxt = document.getElementById('running-info-text');
+
+        if (d.bot_online) {
+            dot.style.background  = '#00e676';
+            dot.style.boxShadow   = '0 0 12px #00e676';
+            stTxt.style.color     = 'var(--success)';
+            stTxt.textContent     = '🟢 البوت متصل';
+            uidTxt.textContent    = d.bot_uid ? 'UID: ' + d.bot_uid : '';
+        } else {
+            dot.style.background  = '#ff5252';
+            dot.style.boxShadow   = '0 0 8px #ff5252';
+            stTxt.style.color     = 'var(--error)';
+            stTxt.textContent     = '🔴 البوت غير متصل';
+            uidTxt.textContent    = '';
+        }
+
+        if (d.auto_running) {
+            badge.style.display   = '';
+            badgeTx.textContent   = 'Auto يعمل – كود: ' + (d.current_team_code || '?');
+            infoTxt.innerHTML     = '<i class="fas fa-spinner fa-spin" style="color:var(--success);margin-left:0.4rem;"></i> Auto شغّال – كود الفريق: <b style="color:var(--success);">' + (d.current_team_code || '?') + '</b>';
+        } else {
+            badge.style.display   = 'none';
+            infoTxt.textContent   = 'لا يوجد شيء يعمل حالياً';
+        }
+    } catch(e) {}
+}
+
+updateStatus();
+setInterval(updateStatus, 3000);
+</script>
+{% endblock %}

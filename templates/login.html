@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}تسجيل الدخول - DBL TEAM{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="form-card glow-border">
+        <div class="form-logo">
+            <img src="/static/images/logo.jpg" alt="DBL TEAM">
+            <h2>DBL TEAM</h2>
+            <p>سجل دخولك للوصول إلى خدماتك</p>
+        </div>
+        <form method="POST" action="/login">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> اسم المستخدم</label>
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" class="form-input" placeholder="أدخل اسم المستخدم" required autocomplete="username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-lock"></i> كلمة المرور</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" class="form-input" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:1rem;">
+                <i class="fas fa-sign-in-alt"></i> دخول
+            </button>
+        </form>
+        <div class="form-divider">أو</div>
+        <div style="text-align:center;">
+            <p style="color:var(--text2);font-size:0.9rem;">ليس لديك حساب؟</p>
+            <a href="/register" class="btn btn-secondary btn-full" style="margin-top:0.5rem;">
+                <i class="fas fa-user-plus"></i> إنشاء حساب جديد
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

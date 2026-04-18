@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}DBL TEAM - خدمات Free Fire{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-content">
+        <img src="/static/images/logo.jpg" alt="DBL TEAM" class="hero-logo">
+        <div class="hero-badge">
+            <i class="fas fa-fire"></i>
+            خدمة Auto Level Up احترافية
+        </div>
+        <h1>DBL TEAM</h1>
+        <p>خدمة بوت Free Fire الاحترافية<br>
+        <span style="color:var(--accent);font-size:0.9rem;">Auto Level Up | خدمة مستمرة | دعم 24/7</span></p>
+        <div class="hero-buttons">
+            {% if user %}
+            <a href="/dashboard" class="btn btn-primary btn-lg">
+                <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+            </a>
+            {% else %}
+            <a href="/login" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt"></i> دخول للموقع
+            </a>
+            {% endif %}
+            <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram btn-lg">
+                <i class="fab fa-telegram"></i> @DBL_0
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-number" data-count="{{ active_users }}">0</div>
+            <div class="stat-label">عميل نشط</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-gamepad"></i></div>
+            <div class="stat-number" data-count="{{ total_accounts }}">0</div>
+            <div class="stat-label">حساب Free Fire</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+            <div class="stat-number" data-count="100">0</div>
+            <div class="stat-label">% ضمان الخدمة</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-number" data-count="24">0</div>
+            <div class="stat-label">ساعة دعم متواصل</div>
+        </div>
+    </div>
+</div>
+
+<!-- What is the service -->
+<div class="section">
+    <div class="section-title">
+        <h2><i class="fas fa-info-circle"></i> ما هي الخدمة؟</h2>
+        <div class="section-divider"></div>
+        <p>خدمة بوت Free Fire الداخلي لرفع المستوى تلقائياً</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-robot"></i></div>
+            <h3>بوت داخل اللعبة</h3>
+            <p>بوت يعمل داخل Free Fire مباشرة ويستجيب لأوامرك لرفع المستوى تلقائياً</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-level-up-alt"></i></div>
+            <h3>Auto Level Up</h3>
+            <p>أمر <code style="color:var(--success);">/lw</code> يبدأ رفع المستوى تلقائياً بدون توقف</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-key"></i></div>
+            <h3>حسابات جاهزة</h3>
+            <p>نوفر لك حساب Free Fire جاهز للاستخدام مع الخدمة مباشرة</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>ضمان 100%</h3>
+            <p>خدمة مضمونة ودعم مستمر من فريق DBL TEAM</p>
+        </div>
+    </div>
+</div>
+
+<!-- How to subscribe -->
+<div class="section">
+    <div class="section-title">
+        <h2><i class="fas fa-list-ol"></i> كيف تشترك؟</h2>
+        <div class="section-divider"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2rem;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));"></div>
+            <div style="font-size:2.5rem;margin-bottom:1rem;">1️⃣</div>
+            <h3>تواصل مع الأدمن</h3>
+            <p style="color:var(--text2);font-size:0.9rem;margin:0.7rem 0;">تواصل عبر تيليقرام وحدد نوع الخطة</p>
+            <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram btn-sm">@DBL_0</a>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2rem;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--success));"></div>
+            <div style="font-size:2.5rem;margin-bottom:1rem;">2️⃣</div>
+            <h3>استلم بيانات حسابك</h3>
+            <p style="color:var(--text2);font-size:0.9rem;margin:0.7rem 0;">يرسل لك الأدمن اسم المستخدم وكلمة المرور</p>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2rem;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--success),var(--gold));"></div>
+            <div style="font-size:2.5rem;margin-bottom:1rem;">3️⃣</div>
+            <h3>سجل دخول وابدأ</h3>
+            <p style="color:var(--text2);font-size:0.9rem;margin:0.7rem 0;">ادخل للموقع واستخدم الخدمة مباشرة</p>
+            <a href="/login" class="btn btn-primary btn-sm">دخول الآن</a>
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="section">
+    <div class="cta-section glow-border">
+        <i class="fab fa-telegram" style="font-size:4rem;color:#29b6f6;margin-bottom:1rem;display:block;"></i>
+        <h2>للاشتراك والاستفسار</h2>
+        <p>تواصل مع المطور مباشرة عبر تيليقرام</p>
+        <a href="https://t.me/DBL_0" target="_blank" class="btn btn-telegram btn-lg">
+            <i class="fab fa-telegram"></i> @DBL_0
+        </a>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}إنشاء حساب - DBL TEAM{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="form-card glow-border">
+        <div class="form-logo">
+            <img src="/static/images/logo.jpg" alt="DBL TEAM">
+            <h2>انضم لـ DBL TEAM</h2>
+            <p>أنشئ حسابك الآن واستمتع بأفضل الخدمات</p>
+        </div>
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> اسم المستخدم</label>
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" class="form-input" placeholder="أدخل اسم مستخدم فريد" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-lock"></i> كلمة المرور</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" class="form-input" placeholder="6 أحرف على الأقل" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fab fa-telegram"></i> معرف تيليقرام (اختياري)</label>
+                <div class="input-icon">
+                    <i class="fab fa-telegram"></i>
+                    <input type="text" name="telegram_id" class="form-input" placeholder="مثال: @username أو ID رقمي">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:1rem;">
+                <i class="fas fa-user-plus"></i> إنشاء الحساب
+            </button>
+        </form>
+        <div class="form-divider">أو</div>
+        <div style="text-align:center;">
+            <p style="color:var(--text2);font-size:0.9rem;">لديك حساب بالفعل؟</p>
+            <a href="/login" class="btn btn-secondary btn-full" style="margin-top:0.5rem;">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
