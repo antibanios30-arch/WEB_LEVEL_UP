@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% block title %}لوحة الإدارة - DBL TEAM{% endblock %}
+{% block content %}
+<div class="dashboard-page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
+        <div>
+            <h1 style="font-size:1.8rem;font-weight:900;"><i class="fas fa-shield-alt" style="color:var(--gold);"></i> لوحة الإدارة</h1>
+            <p style="color:var(--text2);">إدارة المستخدمين وحسابات Free Fire</p>
+        </div>
+        <a href="https://t.me/DBL_0" class="btn btn-telegram btn-sm" target="_blank">
+            <i class="fab fa-telegram"></i> بوت الأدمن
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin-grid" style="margin-bottom:2rem;">
+        <div class="admin-stat">
+            <i class="fas fa-users" style="font-size:2rem;color:var(--primary);margin-bottom:0.5rem;display:block;"></i>
+            <h2>{{ stats.total_users }}</h2>
+            <p>إجمالي المستخدمين</p>
+        </div>
+        <div class="admin-stat" style="border-top-color:var(--success);">
+            <i class="fas fa-check-circle" style="font-size:2rem;color:var(--success);margin-bottom:0.5rem;display:block;"></i>
+            <h2 style="color:var(--success);">{{ stats.active_users }}</h2>
+            <p>مستخدمون نشطون</p>
+        </div>
+        <div class="admin-stat" style="border-top-color:var(--accent);">
+            <i class="fas fa-gamepad" style="font-size:2rem;color:var(--accent);margin-bottom:0.5rem;display:block;"></i>
+            <h2 style="color:var(--accent);">{{ stats.ff_accounts }}</h2>
+            <p>حسابات Free Fire</p>
+        </div>
+        <div class="admin-stat" style="border-top-color:var(--success);">
+            <i class="fas fa-box-open" style="font-size:2rem;color:var(--success);margin-bottom:0.5rem;display:block;"></i>
+            <h2 style="color:var(--success);">{{ stats.available_accounts }}</h2>
+            <p>حسابات FF متاحة</p>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="users-tab" onclick="switchTab('users-tab')"><i class="fas fa-users"></i> المستخدمون</button>
+        <button class="tab-btn" data-tab="ff-tab" onclick="switchTab('ff-tab')"><i class="fas fa-gamepad"></i> حسابات FF</button>
+        <button class="tab-btn" data-tab="logs-tab" onclick="switchTab('logs-tab')"><i class="fas fa-history"></i> السجل</button>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="users-tab" class="tab-content active">
+        <div class="table-card">
+            <div class="table-header">
+                <h3><i class="fas fa-users"></i> قائمة المستخدمين</h3>
+                <div style="font-size:0.85rem;color:var(--text2);">
+                    <i class="fab fa-telegram"></i> أنشئ الحسابات من بوت تيليقرام
+                </div>
+            </div>
+            {% if users %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>المستخدم</th><th>الخطة</th><th>انتهاء الاشتراك</th><th>آخر دخول</th><th>الحالة</th><th>إجراء</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td><strong>{{ u.username }}</strong></td>
+                            <td>
+                                {% if u.plan == 'lifetime' %}
+                                <span class="badge badge-primary">♾️ مدى الحياة</span>
+                                {% elif u.plan == 'basic' %}
+                                <span class="badge badge-success">basic</span>
+                                {% else %}
+                                <span class="badge" style="background:rgba(160,160,192,0.1);color:var(--text2);">{{ u.plan }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if u.plan == 'lifetime' %}
+                                <span style="color:var(--success);">♾️</span>
+                                {% elif u.subscription_expires %}
+                                <span style="color:{% if u.subscription_expires > '2026-01-01' %}var(--success){% else %}var(--error){% endif %}">
+                                    {{ u.subscription_expires[:10] }}
+                                </span>
+                                {% else %}
+                                <span style="color:var(--error);">منتهي</span>
+                                {% endif %}
+                            </td>
+                            <td style="color:var(--text2);">{{ u.last_login[:16] if u.last_login else 'لم يدخل' }}</td>
+                            <td>
+                                {% if u.is_banned %}
+                                <span class="badge badge-error"><i class="fas fa-ban"></i> محظور</span>
+                                {% else %}
+                                <span class="badge badge-success"><i class="fas fa-circle"></i> نشط</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display:flex;gap:0.4rem;">
+                                    <button onclick="banUser({{ u.id }})" class="btn btn-sm {{ 'btn-success' if u.is_banned else 'btn-danger' }}" title="{{ 'رفع حظر' if u.is_banned else 'حظر' }}">
+                                        <i class="fas fa-{{ 'unlock' if u.is_banned else 'ban' }}"></i>
+                                    </button>
+                                    <button onclick="deleteUser({{ u.id }}, '{{ u.username }}')" class="btn btn-sm btn-danger" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <p>لا يوجد مستخدمون - أنشئ الأول من بوت تيليقرام بالأمر /createuser</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- FF Accounts Tab -->
+    <div id="ff-tab" class="tab-content">
+        <div class="table-card" style="margin-bottom:1.5rem;">
+            <div class="table-header">
+                <h3><i class="fas fa-plus"></i> إضافة حساب Free Fire (من الموقع)</h3>
+            </div>
+            <div style="padding:1.5rem;">
+                <form method="POST" action="/admin/add_ff" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;align-items:end;">
+                    <div>
+                        <label class="form-label">UID الحساب</label>
+                        <input name="uid" class="form-input" placeholder="UID" required>
+                    </div>
+                    <div>
+                        <label class="form-label">كلمة المرور</label>
+                        <input name="password" class="form-input" placeholder="Password" required>
+                    </div>
+                    <div>
+                        <label class="form-label">المنطقة</label>
+                        <select name="region" class="form-input">
+                            <option value="IND">IND</option>
+                            <option value="BD">BD</option>
+                            <option value="SG">SG</option>
+                            <option value="TH">TH</option>
+                            <option value="ME">ME</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-plus"></i> إضافة
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="table-card">
+            <div class="table-header">
+                <h3><i class="fas fa-gamepad"></i> حسابات Free Fire</h3>
+            </div>
+            {% if ff_accounts %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>UID</th><th>كلمة المرور</th><th>المنطقة</th><th>مربوط بـ</th><th>الحالة</th><th>التاريخ</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for acc in ff_accounts %}
+                        <tr>
+                            <td>{{ acc.id }}</td>
+                            <td><code style="color:var(--accent);">{{ acc.uid }}</code></td>
+                            <td>
+                                <code style="color:var(--text2);font-size:0.8rem;">{{ acc.password[:15] }}...</code>
+                                <button onclick="copyText('{{ acc.password }}')" class="btn btn-sm btn-secondary" style="margin-right:0.3rem;">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </td>
+                            <td><span class="badge badge-primary">{{ acc.region }}</span></td>
+                            <td>
+                                {% if acc.owner %}
+                                <strong>{{ acc.owner }}</strong>
+                                {% else %}
+                                <span style="color:var(--text2);">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if acc.status == 'available' %}
+                                <span class="badge badge-success">متاح</span>
+                                {% else %}
+                                <span class="badge badge-warning">مُخصص</span>
+                                {% endif %}
+                            </td>
+                            <td style="color:var(--text2);">{{ acc.created_at[:10] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-gamepad"></i>
+                <p>لا توجد حسابات FF. أضف من الأعلى أو من البوت بالأمر /addff</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Logs Tab -->
+    <div id="logs-tab" class="tab-content">
+        <div class="table-card">
+            <div class="table-header">
+                <h3><i class="fas fa-history"></i> سجل الأنشطة</h3>
+            </div>
+            {% if logs %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>الإجراء</th><th>التفاصيل</th><th>بواسطة</th><th>التاريخ</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.id }}</td>
+                            <td><span class="badge badge-primary">{{ log.action }}</span></td>
+                            <td>{{ log.details }}</td>
+                            <td><strong>{{ log.by_who }}</strong></td>
+                            <td style="color:var(--text2);">{{ log.created_at[:16] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state"><i class="fas fa-history"></i><p>لا يوجد سجل</p></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function banUser(id) {
+    fetch(`/admin/ban/${id}`, {method:'POST'})
+        .then(r=>r.json()).then(d=>{ if(d.success) location.reload(); });
+}
+function deleteUser(id, name) {
+    if (!confirm(`هل تريد حذف المستخدم "${name}"؟`)) return;
+    fetch(`/admin/delete/${id}`, {method:'POST'})
+        .then(r=>r.json()).then(d=>{ if(d.success) location.reload(); });
+}
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => showToast('تم النسخ!', 'success'));
+}
+</script>
+{% endblock %}
